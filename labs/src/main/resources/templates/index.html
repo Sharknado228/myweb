@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8"></meta>
+		<link href="/index.css" th:href="@{/index.css}" type="text/css" rel="stylesheet"></link>
+		<link rel="stylesheet" th:href="@{css/bootstrap.min.css}"></link>
+		<title>Blog</title>
+		<script type="text/javascript" th:src="@{js/jquery-3.1.1.min.js}"></script>
+	<script type="text/javascript">
+ var imgBg=Array('images/background.jpg','images/background2.jpg','images/background3.jpg', 'images/background4.png', 'images/background5.jpg'); //список файлов с фонами
+ showImg = function() {
+  var index=Math.floor(Math.random()*imgBg.length);
+  document.getElementsByTagName('body')[0].style.backgroundImage='url('+imgBg[index]+')';
+ }
+ window.onload=showImg; 
+ 
+</script>
+<script>
+function vau() {
+    $('.commentAdd').on('click',function () {
+        var commentAuthor = "Hzzzzzz";
+        var comment = $(this).parent().find(".comment").val();  // #comment  ыдентифыкатор  не можна використовувати оск.  форма у Вас повторюэться
+        var post_id = $(this).parent().find(".idi").val(); //для input немає text();
+        
+        $.ajax({
+        	url:'/labs/post',
+        	type: 'POST',
+       		//dataType: 'json',
+        	//contentType: "application/json",
+       		data: ({
+        	  commentAuthor: commentAuthor,
+        	  comment: comment,
+        	  post_id:post_id
+        	}),
+        	success:function(resp){
+        		console.log(resp);
+        	},
+        	error: function(err){
+                console.log("Something really bad happened " + err.responseText);
+                
+           }
+
+    });
+    }) //додала дужку - не було
+}
+
+$(document).ready(vau);
+</script>
+
+
+
+	</head>
+<body>
+	
+	<div class="container-fluid ">
+	<div class ="row no-gutter">
+	<header>
+		<a href="/html/Site 1.2/home.html" class="col-lg-3 col-md-3 col-sm-3 col-xs-3">Main</a>
+		<a href="/html/Site 1.2/news.html" class="col-lg-3 col-md-3 col-sm-3 col-xs-3">News</a>
+		<a href="#" class="col-lg-3 col-md-3 col-sm-3 col-xs-3">Login</a>
+		<a href="#" class="col-lg-3 col-md-3 col-sm-3 col-xs-3">Search</a>
+	</header>
+				<div class="col-lg-2 menu-news">
+					<a href="#"><img src="images/menu11.png"/><p>Popular</p></a>
+					<a href="#"><img src="images/menu33.png"></img><p>Followers</p></a>
+					<a href="#"><img src="images/menu22.png"></img><p>Random</p></a>
+				</div>
+				<div class="col-lg-8 no-gutter">
+				<ul class="no-gutter" th:each="post: ${posts}">
+				<li class="col-lg-12 main-news" th:id="${post.id}">
+					<header>
+						<a href="#"><img src="images/menu22.png"/></a>
+						<a href="#" th:text="${post.author.login}">photografer</a>
+					</header>
+					<div class="topik"><a href="#"><img th:src="${post.postImage}"/></a></div>
+					<div class="comments" >
+						<div class="comname" th:each="comment: ${post.comments}">
+							<a href="#" th:text="${comment.commentAuthor}">namwre</a>
+							<span>: </span>
+							<p th:text="${comment.comment}">Zaebok</p>
+							
+						</div>
+					</div>
+					<div class="comos">
+					<form method="POST" action="/post">
+						<input  class="idi" name="idi" type="hidden" size="99" th:value="${post.id}" value="1"></input>
+                		<input  class="comment" name="str" type="text" size="99" placeholder="Coment ostav"></input>
+            			<button name="commentAdd" class="commentAdd" type="button">Ok</button>
+        			</form>
+        			</div>
+				</li>
+				</ul>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
